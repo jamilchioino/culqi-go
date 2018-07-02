@@ -3,32 +3,48 @@
 // Inicia cliente con datos de condifuración de comercio.
 package culqi
 
-const (
-	libraryVersion = "0.1.0"
-	DefaultBaseURL = "https://api.culqi.com/"
-	UserAgent      = "culqi-go/" + libraryVersion
-	mediaType      = "application/json"
-	format         = "json"
-	headerCulqiTrackId  = "x-culqi-tracking-id"
-	headerEnvironment = "x-culqi-environment"
+import "net/http"
 
+const (
+	libraryVersion     = "0.1.0"
+	defaultBaseURL     = "https://api.culqi.com/"
+	userAgent          = "culqi-go/" + libraryVersion
+	mediaType          = "application/json"
+	format             = "json"
+	headerCulqiTrackID = "x-culqi-tracking-id"
+	headerEnvironment  = "x-culqi-environment"
+	apiVersion         = "v2"
 )
 
-type Config struct {
-  MerchantCode   string
-	ApiKey   string
-	ApiVersion string
-  BaseURL string
-  UserAgent string
+type Culqui struct {
+	conf *Config
+	http *http.Client
 }
 
-func New(config *Config) *Config {
-    // set valores por defecto
-    return &Config{
-			  MerchantCode: config.MerchantCode,
-				ApiKey: config.ApiKey,
-				ApiVersion: config.ApiVersion,
-        //BaseURL: defaultBaseURL,
-        //UserAgent: userAgent,
-    }
+type Config struct {
+	MerchantCode string
+	APIKey       string
+	APIVersion   string
+}
+
+func New(config *Config, http *http.Client) *Culqui {
+	// set valores por defecto
+	return &Culqui{
+		conf: config,
+		http: http,
+	}
+}
+
+func DefaultWithCredentials(apiKey string) *Culqui {
+	conf := &Config{
+		APIKey: apiKey,
+	}
+	return &Culqui{
+		conf: conf,
+		http: http.DefaultClient,
+	}
+}
+
+func (c *Culqui) WithCustomClient(http *http.Client) {
+	c.http = http
 }
