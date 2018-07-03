@@ -28,7 +28,7 @@ type Subscription struct {
 	Charges         []Charge    `json:"charges"`
 	Current         int         `json:"current"`
 	NextBillingDate int         `json:"next_billing_date"`
-	metadata        interface{} `json:"metadata"`
+	Metadata        interface{} `json:"metadata"`
 }
 
 type SubscriptionParams struct {
@@ -36,7 +36,7 @@ type SubscriptionParams struct {
 	PlanID string `json:"plan_id"`
 }
 
-func (c *Culqui) GetSubscription(id string) (*Subscription, error) {
+func (c *Culqi) GetSubscription(id string) (*Subscription, error) {
 
 	req, err := http.NewRequest("GET", defaultBaseURL+"v2/"+subscriptionsBase+id, nil)
 	req.Header.Set("Authorization", "Bearer "+c.conf.APIKey)
@@ -62,7 +62,7 @@ func (c *Culqui) GetSubscription(id string) (*Subscription, error) {
 	return &t, nil
 }
 
-func (c *Culqui) CreateSubscription(params *ChargeParams) (*ChargeResponse, error) {
+func (c *Culqi) CreateSubscription(params *ChargeParams) (*ChargeResponse, error) {
 
 	if params == nil {
 		return nil, fmt.Errorf("no se envió parametros")

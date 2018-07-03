@@ -109,7 +109,7 @@ type AntifraudDetails struct {
 	Object      string `json:"object"`
 }
 
-func (c *Culqui) GetCharge(id string) (*Charge, error) {
+func (c *Culqi) GetCharge(id string) (*Charge, error) {
 
 	req, err := http.NewRequest("GET", defaultBaseURL+"v2/"+chargesBase+id, nil)
 	req.Header.Set("Authorization", "Bearer "+c.conf.APIKey)
@@ -135,7 +135,7 @@ func (c *Culqui) GetCharge(id string) (*Charge, error) {
 	return &t, nil
 }
 
-func (c *Culqui) CreateCharge(params *ChargeParams) (*ChargeResponse, error) {
+func (c *Culqi) CreateCharge(params *ChargeParams) (*ChargeResponse, error) {
 
 	if params == nil {
 		return nil, fmt.Errorf("no se envió parametros")

@@ -1,30 +1,47 @@
 package culqi
 
-type TokenParams struct {
-	Email      string `json:"email"`
-	CardNumber int    `json:"card_number"`
-	Cvv        int    `json:"cvv"`
-	ExpMonth   int    `json:"expiration_month"`
-	ExpYear    int    `json:"expiration_year"`
-}
+import (
+	"encoding/json"
+	"io/ioutil"
+	"net/http"
+)
 
 type Token struct {
-	Object       string `json:"object"`
-	ID           string `json:"id"`
-	Type         string `json:"type"`
-	Email        string `json:"email"`
-	CreationDate int    `json:"creation_date"`
-	CardNumber   string `json:"card_number"`
-	LastFour     string `json:"last_four"`
-	Active       bool   `json:"active"`
-	IIN          IIN    `json:"iin"`
-	Client       Client `json:"client"`
+	Object       string      `json:"object"`
+	ID           string      `json:"id"`
+	Type         string      `json:"type"`
+	Email        string      `json:"email"`
+	CreationDate int         `json:"creation_date"`
+	CardNumber   string      `json:"card_number"`
+	LastFour     string      `json:"last_four"`
+	Active       bool        `json:"active"`
+	IIN          IIN         `json:"iin"`
+	Client       Client      `json:"client"`
+	Metadata     interface{} `json:"metadata"`
 }
 
-type CardHolder struct {
-	// Object: "cardholder"
-	Object    string `json:"object"`
-	FirstName string `json:"first_name"`
-	Email     string `json:"email"`
-	LastName  string `json:"last_name"`
+func (c *Culqi) GetToken(id string) (*Charge, error) {
+
+	req, err := http.NewRequest("GET", defaultBaseURL+"v2/"+chargesBase+id, nil)
+	req.Header.Set("Authorization", "Bearer "+c.conf.APIKey)
+	req.Header.Set("User-Agent", userAgent)
+
+	resp, err := c.http.Do(req)
+	if err != nil {
+		return nil, err
+	}
+
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	t := Charge{}
+
+	if err := json.Unmarshal(body, &t); err != nil {
+		return nil, err
+	}
+
+	return &t, nil
 }

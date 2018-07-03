@@ -46,7 +46,7 @@ type CardsParams struct {
 	SourceID         string           `json:"source_id"`
 }
 
-func (c *Culqui) GetCard(id string) (*Charge, error) {
+func (c *Culqi) GetCard(id string) (*Charge, error) {
 
 	req, err := http.NewRequest("GET", defaultBaseURL+"v2/"+cardsBase+id, nil)
 	req.Header.Set("Authorization", "Bearer "+c.conf.APIKey)
@@ -72,7 +72,7 @@ func (c *Culqui) GetCard(id string) (*Charge, error) {
 	return &t, nil
 }
 
-func (c *Culqui) CreateCard(params *CardsParams) (*ChargeResponse, error) {
+func (c *Culqi) CreateCard(params *CardsParams) (*ChargeResponse, error) {
 
 	if params == nil {
 		return nil, fmt.Errorf("no se envió parametros")
@@ -90,7 +90,7 @@ func (c *Culqui) CreateCard(params *CardsParams) (*ChargeResponse, error) {
 
 	resp, err := c.http.Do(req)
 	if err != nil {
-		return nil, err
+		return nil, extractError(resp)
 	}
 
 	body, err := ioutil.ReadAll(resp.Body)
