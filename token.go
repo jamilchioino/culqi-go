@@ -7,17 +7,17 @@ import (
 )
 
 type Token struct {
-	Object       string      `json:"object"`
-	ID           string      `json:"id"`
-	Type         string      `json:"type"`
-	Email        string      `json:"email"`
-	CreationDate int         `json:"creation_date"`
-	CardNumber   string      `json:"card_number"`
-	LastFour     string      `json:"last_four"`
-	Active       bool        `json:"active"`
-	IIN          IIN         `json:"iin"`
-	Client       Client      `json:"client"`
-	Metadata     interface{} `json:"metadata"`
+	Object       string            `json:"object"`
+	ID           string            `json:"id"`
+	Type         string            `json:"type"`
+	Email        string            `json:"email"`
+	CreationDate int               `json:"creation_date"`
+	CardNumber   string            `json:"card_number"`
+	LastFour     string            `json:"last_four"`
+	Active       bool              `json:"active"`
+	IIN          IIN               `json:"iin"`
+	Client       Client            `json:"client"`
+	Metadata     map[string]string `json:"metadata"`
 }
 
 func (c *Culqi) GetToken(id string) (*Charge, error) {

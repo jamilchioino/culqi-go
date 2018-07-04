@@ -27,14 +27,15 @@ type Culqi struct {
 }
 
 type CulqiError struct {
-	Object          string
-	Type            string
-	ChargeID        string
-	Code            string
-	DeclineCode     string
-	MerchantMessage string
-	UserMessage     string
-	Param           string
+	Object          string `json:"object"`
+	Type            string `json:"type"`
+	ChargeID        string `json:"charge_id"`
+	Code            string `json:"code"`
+	DeclineCode     string `json:"decline_code"`
+	MerchantMessage string `json:"merchant_message"`
+	UserMessage     string `json:"user_message"`
+	Param           string `json:"param"`
+	HTTPError       int
 }
 
 func (e *CulqiError) Error() string {
@@ -81,6 +82,8 @@ func extractError(resp *http.Response) *CulqiError {
 	if err := json.Unmarshal(body, &t); err != nil {
 		return nil
 	}
+
+	t.HTTPError = resp.StatusCode
 
 	return &t
 }

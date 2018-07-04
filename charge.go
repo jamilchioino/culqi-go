@@ -35,34 +35,34 @@ type ChargeParams struct {
 }
 
 type ChargeResponse struct {
-	Duplicated         bool             `json:"duplicated"`
-	Object             string           `json:"object"`
-	ID                 string           `json:"id"`
-	Amount             int              `json:"amount"`
-	AmountRefunded     int              `json:"amount_refunded"`
-	CurrentAmount      int              `json:"current_amount"`
-	Installments       int              `json:"installments"`
-	InstallmentsAmount int              `json:"installments_amount"`
-	Currency           string           `json:"currency"`
-	Email              string           `json:"email"`
-	Description        string           `json:"description"`
-	Source             Source           `json:"source"`
-	FraudScore         int              `json:"fraud_score"`
-	AntifraudDetails   AntifraudDetails `json:"antifraud_details"`
-	Date               int              `json:"date"`
-	ReferenceCode      string           `json:"reference_code"`
-	Fee                int              `json:"fee"`
-	FeeDetails         FeeDetails       `json:"fee_details"`
-	NetAmount          int              `json:"net_amount"`
-	ResponseCode       string           `json:"response_code"`
-	MerchantMessage    string           `json:"merchant_message"`
-	UserMessage        string           `json:"user_message"`
-	DeviceIP           string           `json:"device_ip"`
-	DeviceCountry      string           `json:"device_country"`
-	CountryIP          string           `json:"country_ip"`
-	Product            string           `json:"product"`
-	State              string           `json:"state"`
-	Metadata           interface{}      `json:"metadata"`
+	Duplicated         bool              `json:"duplicated"`
+	Object             string            `json:"object"`
+	ID                 string            `json:"id"`
+	Amount             int               `json:"amount"`
+	AmountRefunded     int               `json:"amount_refunded"`
+	CurrentAmount      int               `json:"current_amount"`
+	Installments       int               `json:"installments"`
+	InstallmentsAmount int               `json:"installments_amount"`
+	Currency           string            `json:"currency"`
+	Email              string            `json:"email"`
+	Description        string            `json:"description"`
+	Source             Source            `json:"source"`
+	FraudScore         int               `json:"fraud_score"`
+	AntifraudDetails   AntifraudDetails  `json:"antifraud_details"`
+	Date               int               `json:"date"`
+	ReferenceCode      string            `json:"reference_code"`
+	Fee                int               `json:"fee"`
+	FeeDetails         FeeDetails        `json:"fee_details"`
+	NetAmount          int               `json:"net_amount"`
+	ResponseCode       string            `json:"response_code"`
+	MerchantMessage    string            `json:"merchant_message"`
+	UserMessage        string            `json:"user_message"`
+	DeviceIP           string            `json:"device_ip"`
+	DeviceCountry      string            `json:"device_country"`
+	CountryIP          string            `json:"country_ip"`
+	Product            string            `json:"product"`
+	State              string            `json:"state"`
+	Metadata           map[string]string `json:"metadata"`
 }
 
 type FeeDetails struct {
@@ -74,18 +74,18 @@ type FeeDetails struct {
 }
 
 type Source struct {
-	Object       string      `json:"object"`
-	ID           string      `json:"id"`
-	Type         string      `json:"type"`
-	CreationDate int         `json:"creation_date"`
-	CardNumber   string      `json:"card_number"`
-	LastFour     string      `json:"last_four"`
-	Active       bool        `json:"active"`
-	Email        string      `json:"email"`
-	IIN          IIN         `json:"iin"`
-	Client       Client      `json:"client"`
-	Metadata     interface{} `json:"metadata"`
-	Duplicated   bool        `json:"duplicated"`
+	Object       string            `json:"object"`
+	ID           string            `json:"id"`
+	Type         string            `json:"type"`
+	CreationDate int               `json:"creation_date"`
+	CardNumber   string            `json:"card_number"`
+	LastFour     string            `json:"last_four"`
+	Active       bool              `json:"active"`
+	Email        string            `json:"email"`
+	IIN          IIN               `json:"iin"`
+	Client       Client            `json:"client"`
+	Metadata     map[string]string `json:"metadata"`
+	Duplicated   bool              `json:"duplicated"`
 }
 
 type Client struct {

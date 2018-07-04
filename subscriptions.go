@@ -13,22 +13,22 @@ const (
 )
 
 type Subscription struct {
-	Object          string      `json:"object"`
-	ID              string      `json:"id"`
-	CreationDate    int         `json:"creation_date"`
-	FirstName       string      `json:"first_name"`
-	LastName        string      `json:"last_name"`
-	Address         string      `json:"address"`
-	AddressCity     string      `json:"address_city"`
-	CountryCode     string      `json:"country_code"`
-	Token           Token       `json:"token"`
-	Email           string      `json:"email"`
-	Phone           int         `json:"phone"`
-	PlanID          string      `json:"plan_id"`
-	Charges         []Charge    `json:"charges"`
-	Current         int         `json:"current"`
-	NextBillingDate int         `json:"next_billing_date"`
-	Metadata        interface{} `json:"metadata"`
+	Object          string            `json:"object"`
+	ID              string            `json:"id"`
+	CreationDate    int               `json:"creation_date"`
+	FirstName       string            `json:"first_name"`
+	LastName        string            `json:"last_name"`
+	Address         string            `json:"address"`
+	AddressCity     string            `json:"address_city"`
+	CountryCode     string            `json:"country_code"`
+	Token           Token             `json:"token"`
+	Email           string            `json:"email"`
+	Phone           int               `json:"phone"`
+	PlanID          string            `json:"plan_id"`
+	Charges         []Charge          `json:"charges"`
+	Current         int               `json:"current"`
+	NextBillingDate int               `json:"next_billing_date"`
+	Metadata        map[string]string `json:"metadata"`
 }
 
 type SubscriptionParams struct {

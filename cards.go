@@ -13,12 +13,12 @@ const (
 )
 
 type Cards struct {
-	Object     string      `json:"object"`
-	ID         string      `json:"id"`
-	Date       int         `json:"date"`
-	CustomerID string      `json:"customer_id"`
-	Source     Source      `json:"source"`
-	Metadata   interface{} `json:"metadata"`
+	Object     string            `json:"object"`
+	ID         string            `json:"id"`
+	Date       int               `json:"date"`
+	CustomerID string            `json:"customer_id"`
+	Source     Source            `json:"source"`
+	Metadata   map[string]string `json:"metadata"`
 }
 
 type Issuer struct {
