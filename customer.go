@@ -18,16 +18,18 @@ type Customer struct {
 	CreationDate     int              `json:"creation_date"`
 	Email            string           `json:"email"`
 	AntifraudDetails AntifraudDetails `json:"antifraud_details"`
+	Cards            []Card           `json:"cards"`
 }
 
 type CustomerParams struct {
-	FirstName   string `json:"first_name"`
-	LastName    string `json:"last_name"`
-	Email       string `json:"email"`
-	Address     string `json:"address"`
-	AddressCity string `json:"address_city"`
-	CountryCode string `json:"country_code"`
-	PhoneNumber string `json:"phone_number"`
+	FirstName   *string                `json:"first_name,omitempty"`
+	LastName    *string                `json:"last_name,omitempty"`
+	Email       *string                `json:"email,omitempty"`
+	Address     *string                `json:"address,omitempty"`
+	AddressCity *string                `json:"address_city,omitempty"`
+	CountryCode *string                `json:"country_code,omitempty"`
+	PhoneNumber *string                `json:"phone_number,omitempty"`
+	Metadata    map[string]interface{} `json:"metadata"`
 }
 
 type DeletedCustomer struct {
@@ -59,6 +61,10 @@ func (c *Culqi) GetCustomer(id string) (*Customer, error) {
 	req.Header.Set("User-Agent", userAgent)
 
 	resp, err := c.http.Do(req)
+	if resp.StatusCode >= 400 {
+		return nil, extractError(resp)
+	}
+
 	if err != nil {
 		return nil, err
 	}
@@ -81,7 +87,7 @@ func (c *Culqi) GetCustomer(id string) (*Customer, error) {
 func (c *Culqi) CreateCustomer(params *CustomerParams) (*Customer, error) {
 
 	if params == nil {
-		return nil, fmt.Errorf("no se envió parametros")
+		return nil, fmt.Errorf("params are empty")
 	}
 
 	reqJSON, err := json.Marshal(params)
@@ -145,6 +151,10 @@ func (c *Culqi) DeleteCustomer(id string) (*DeletedCustomer, error) {
 	req.Header.Set("Authorization", "Bearer "+c.conf.APIKey)
 	req.Header.Set("User-Agent", userAgent)
 
+	if id == "" {
+		return nil, fmt.Errorf("id not specified")
+	}
+
 	resp, err := c.http.Do(req)
 	if err != nil {
 		return nil, err
@@ -157,6 +167,47 @@ func (c *Culqi) DeleteCustomer(id string) (*DeletedCustomer, error) {
 	defer resp.Body.Close()
 
 	t := DeletedCustomer{}
+
+	if err := json.Unmarshal(body, &t); err != nil {
+		return nil, err
+	}
+
+	return &t, nil
+}
+
+func (c *Culqi) UpdateCustomer(id string, params *CustomerParams) (*Customer, error) {
+
+	if id == "" {
+		return nil, fmt.Errorf("id not specified")
+	}
+
+	if params == nil {
+		return nil, fmt.Errorf("params are empty")
+	}
+
+	reqJSON, err := json.Marshal(params)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("PATCH", defaultBaseURL+"v2/"+customerBase+"/"+id, bytes.NewBuffer(reqJSON))
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Authorization", "Bearer "+c.conf.APIKey)
+	req.Header.Set("User-Agent", userAgent)
+
+	resp, err := c.http.Do(req)
+
+	if resp.StatusCode >= 400 {
+		return nil, extractError(resp)
+	}
+
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	t := Customer{}
 
 	if err := json.Unmarshal(body, &t); err != nil {
 		return nil, err

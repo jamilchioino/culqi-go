@@ -13,22 +13,24 @@ const (
 )
 
 type Subscription struct {
-	Object          string            `json:"object"`
-	ID              string            `json:"id"`
-	CreationDate    int               `json:"creation_date"`
-	FirstName       string            `json:"first_name"`
-	LastName        string            `json:"last_name"`
-	Address         string            `json:"address"`
-	AddressCity     string            `json:"address_city"`
-	CountryCode     string            `json:"country_code"`
-	Token           Token             `json:"token"`
-	Email           string            `json:"email"`
-	Phone           int               `json:"phone"`
-	PlanID          string            `json:"plan_id"`
-	Charges         []Charge          `json:"charges"`
-	Current         int               `json:"current"`
-	NextBillingDate int               `json:"next_billing_date"`
-	Metadata        map[string]string `json:"metadata"`
+	Object             string                 `json:"object"`
+	ID                 string                 `json:"id"`
+	CreationDate       int                    `json:"creation_date"`
+	Status             string                 `json:"status"`
+	CurrentPeriod      int                    `json:"current_period"`
+	TotalPeriods       int                    `json:"total_periods"`
+	CurrentPeriodStart int                    `json:"current_period_start"`
+	CurrentPeriodEnd   int                    `json:"current_period_end"`
+	CancelAtPeriodEnd  bool                   `json:"cancel_at_period_end"`
+	CanceledAt         int                    `json:"canceled_at"`
+	EndedAt            int                    `json:"ended_at"`
+	NextBillingDate    int                    `json:"next_billing_date"`
+	TrialStart         int                    `json:"trial_start"`
+	TrialEnd           int                    `json:"trial_end"`
+	Charges            []Charge               `json:"charges"`
+	Plan               Plan                   `json:"plan"`
+	Card               Card                   `json:"card"`
+	Metadata           map[string]interface{} `json:"metadata"`
 }
 
 type SubscriptionParams struct {
@@ -62,7 +64,7 @@ func (c *Culqi) GetSubscription(id string) (*Subscription, error) {
 	return &t, nil
 }
 
-func (c *Culqi) CreateSubscription(params *ChargeParams) (*ChargeResponse, error) {
+func (c *Culqi) CreateSubscription(params *SubscriptionParams) (*Subscription, error) {
 
 	if params == nil {
 		return nil, fmt.Errorf("no se envió parametros")
@@ -89,7 +91,7 @@ func (c *Culqi) CreateSubscription(params *ChargeParams) (*ChargeResponse, error
 	}
 	defer resp.Body.Close()
 
-	t := ChargeResponse{}
+	t := Subscription{}
 
 	if err := json.Unmarshal(body, &t); err != nil {
 		return nil, err

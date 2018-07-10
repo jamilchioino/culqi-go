@@ -73,21 +73,6 @@ type FeeDetails struct {
 	Object       string  `json:"object"`
 }
 
-type Source struct {
-	Object       string            `json:"object"`
-	ID           string            `json:"id"`
-	Type         string            `json:"type"`
-	CreationDate int               `json:"creation_date"`
-	CardNumber   string            `json:"card_number"`
-	LastFour     string            `json:"last_four"`
-	Active       bool              `json:"active"`
-	Email        string            `json:"email"`
-	IIN          IIN               `json:"iin"`
-	Client       Client            `json:"client"`
-	Metadata     map[string]string `json:"metadata"`
-	Duplicated   bool              `json:"duplicated"`
-}
-
 type Client struct {
 	IP                string `json:"ip"`
 	IPCountry         string `json:"ip_country"`

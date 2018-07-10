@@ -12,7 +12,7 @@ const (
 	cardsBase = "cards"
 )
 
-type Cards struct {
+type Card struct {
 	Object     string            `json:"object"`
 	ID         string            `json:"id"`
 	Date       int               `json:"date"`
@@ -21,6 +21,20 @@ type Cards struct {
 	Metadata   map[string]string `json:"metadata"`
 }
 
+type Source struct {
+	Object       string            `json:"object"`
+	ID           string            `json:"id"`
+	Type         string            `json:"type"`
+	CreationDate int               `json:"creation_date"`
+	CardNumber   string            `json:"card_number"`
+	LastFour     string            `json:"last_four"`
+	Active       bool              `json:"active"`
+	Email        string            `json:"email"`
+	IIN          IIN               `json:"iin"`
+	Client       Client            `json:"client"`
+	Metadata     map[string]string `json:"metadata"`
+	Duplicated   bool              `json:"duplicated"`
+}
 type Issuer struct {
 	Name        string `json:"name"`
 	Country     string `json:"country"`
@@ -39,11 +53,8 @@ type IIN struct {
 }
 
 type CardsParams struct {
-	Amount           string           `json:"amount"`
-	CurrencyCode     string           `json:"currency_code"`
-	Email            string           `json:"email"`
-	AntifraudDetails AntifraudDetails `json:"antifraud_details"`
-	SourceID         string           `json:"source_id"`
+	CustomerID string `json:"customer_id"`
+	TokenID    string `json:"token_id"`
 }
 
 func (c *Culqi) GetCard(id string) (*Charge, error) {
@@ -72,7 +83,7 @@ func (c *Culqi) GetCard(id string) (*Charge, error) {
 	return &t, nil
 }
 
-func (c *Culqi) CreateCard(params *CardsParams) (*ChargeResponse, error) {
+func (c *Culqi) CreateCard(params *CardsParams) (*Card, error) {
 
 	if params == nil {
 		return nil, fmt.Errorf("no se envió parametros")
@@ -89,8 +100,11 @@ func (c *Culqi) CreateCard(params *CardsParams) (*ChargeResponse, error) {
 	req.Header.Set("User-Agent", userAgent)
 
 	resp, err := c.http.Do(req)
-	if err != nil {
+	if resp.StatusCode >= 400 {
 		return nil, extractError(resp)
+	}
+	if err != nil {
+		return nil, err
 	}
 
 	body, err := ioutil.ReadAll(resp.Body)
@@ -99,7 +113,7 @@ func (c *Culqi) CreateCard(params *CardsParams) (*ChargeResponse, error) {
 	}
 	defer resp.Body.Close()
 
-	t := ChargeResponse{}
+	t := Card{}
 
 	if err := json.Unmarshal(body, &t); err != nil {
 		return nil, err
