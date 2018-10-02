@@ -57,10 +57,10 @@ type CustomerPaging struct {
 func (c *Culqi) GetCustomer(id string) (*Customer, error) {
 
 	req, err := http.NewRequest("GET", defaultBaseURL+"v2/"+customerBase+"/"+id, nil)
-	req.Header.Set("Authorization", "Bearer "+c.conf.APIKey)
+	req.Header.Set("Authorization", "Bearer "+c.Conf.APIKey)
 	req.Header.Set("User-Agent", userAgent)
 
-	resp, err := c.http.Do(req)
+	resp, err := c.Http.Do(req)
 	if resp.StatusCode >= 400 {
 		return nil, extractError(resp)
 	}
@@ -97,10 +97,10 @@ func (c *Culqi) CreateCustomer(params *CustomerParams) (*Customer, error) {
 
 	req, err := http.NewRequest("POST", defaultBaseURL+"v2/"+customerBase, bytes.NewBuffer(reqJSON))
 	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("Authorization", "Bearer "+c.conf.APIKey)
+	req.Header.Set("Authorization", "Bearer "+c.Conf.APIKey)
 	req.Header.Set("User-Agent", userAgent)
 
-	resp, err := c.http.Do(req)
+	resp, err := c.Http.Do(req)
 
 	if resp.StatusCode >= 400 {
 		return nil, extractError(resp)
@@ -123,10 +123,10 @@ func (c *Culqi) CreateCustomer(params *CustomerParams) (*Customer, error) {
 
 func (c *Culqi) AllCustomers() (*CustomerPaging, error) {
 	req, err := http.NewRequest("GET", defaultBaseURL+"v2/"+customerBase, nil)
-	req.Header.Set("Authorization", "Bearer "+c.conf.APIKey)
+	req.Header.Set("Authorization", "Bearer "+c.Conf.APIKey)
 	req.Header.Set("User-Agent", userAgent)
 
-	resp, err := c.http.Do(req)
+	resp, err := c.Http.Do(req)
 	if err != nil {
 		return nil, err
 	}
@@ -148,14 +148,14 @@ func (c *Culqi) AllCustomers() (*CustomerPaging, error) {
 
 func (c *Culqi) DeleteCustomer(id string) (*DeletedCustomer, error) {
 	req, err := http.NewRequest("DELETE", defaultBaseURL+"v2/"+customerBase+"/"+id, nil)
-	req.Header.Set("Authorization", "Bearer "+c.conf.APIKey)
+	req.Header.Set("Authorization", "Bearer "+c.Conf.APIKey)
 	req.Header.Set("User-Agent", userAgent)
 
 	if id == "" {
 		return nil, fmt.Errorf("id not specified")
 	}
 
-	resp, err := c.http.Do(req)
+	resp, err := c.Http.Do(req)
 	if err != nil {
 		return nil, err
 	}
@@ -192,10 +192,10 @@ func (c *Culqi) UpdateCustomer(id string, params *CustomerParams) (*Customer, er
 
 	req, err := http.NewRequest("PATCH", defaultBaseURL+"v2/"+customerBase+"/"+id, bytes.NewBuffer(reqJSON))
 	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("Authorization", "Bearer "+c.conf.APIKey)
+	req.Header.Set("Authorization", "Bearer "+c.Conf.APIKey)
 	req.Header.Set("User-Agent", userAgent)
 
-	resp, err := c.http.Do(req)
+	resp, err := c.Http.Do(req)
 
 	if resp.StatusCode >= 400 {
 		return nil, extractError(resp)

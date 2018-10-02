@@ -22,8 +22,8 @@ const (
 )
 
 type Culqi struct {
-	conf *Config
-	http *http.Client
+	Conf *Config
+	Http *http.Client
 }
 
 type CulqiError struct {
@@ -51,8 +51,8 @@ type Config struct {
 func New(config *Config, http *http.Client) *Culqi {
 	// set valores por defecto
 	return &Culqi{
-		conf: config,
-		http: http,
+		Conf: config,
+		Http: http,
 	}
 }
 
@@ -61,13 +61,13 @@ func DefaultWithCredentials(apiKey string) *Culqi {
 		APIKey: apiKey,
 	}
 	return &Culqi{
-		conf: conf,
-		http: http.DefaultClient,
+		Conf: conf,
+		Http: http.DefaultClient,
 	}
 }
 
 func (c *Culqi) WithCustomClient(http *http.Client) {
-	c.http = http
+	c.Http = http
 }
 
 func extractError(resp *http.Response) *CulqiError {

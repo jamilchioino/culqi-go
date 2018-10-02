@@ -33,10 +33,10 @@ type PlansPaging struct {
 func (c *Culqi) GetPlan(id string) (*Plan, error) {
 
 	req, err := http.NewRequest("GET", defaultBaseURL+"v2/"+plansBase+"/"+id, nil)
-	req.Header.Set("Authorization", "Bearer "+c.conf.APIKey)
+	req.Header.Set("Authorization", "Bearer "+c.Conf.APIKey)
 	req.Header.Set("User-Agent", userAgent)
 
-	resp, err := c.http.Do(req)
+	resp, err := c.Http.Do(req)
 	if err != nil {
 		return nil, err
 	}
@@ -58,10 +58,10 @@ func (c *Culqi) GetPlan(id string) (*Plan, error) {
 
 func (c *Culqi) AllPlans() (*PlansPaging, error) {
 	req, err := http.NewRequest("GET", defaultBaseURL+"v2/"+plansBase, nil)
-	req.Header.Set("Authorization", "Bearer "+c.conf.APIKey)
+	req.Header.Set("Authorization", "Bearer "+c.Conf.APIKey)
 	req.Header.Set("User-Agent", userAgent)
 
-	resp, err := c.http.Do(req)
+	resp, err := c.Http.Do(req)
 	if err != nil {
 		return nil, err
 	}

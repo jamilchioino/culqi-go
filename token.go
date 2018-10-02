@@ -23,10 +23,10 @@ type Token struct {
 func (c *Culqi) GetToken(id string) (*Charge, error) {
 
 	req, err := http.NewRequest("GET", defaultBaseURL+"v2/"+chargesBase+id, nil)
-	req.Header.Set("Authorization", "Bearer "+c.conf.APIKey)
+	req.Header.Set("Authorization", "Bearer "+c.Conf.APIKey)
 	req.Header.Set("User-Agent", userAgent)
 
-	resp, err := c.http.Do(req)
+	resp, err := c.Http.Do(req)
 	if err != nil {
 		return nil, err
 	}

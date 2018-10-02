@@ -60,10 +60,10 @@ type CardsParams struct {
 func (c *Culqi) GetCard(id string) (*Charge, error) {
 
 	req, err := http.NewRequest("GET", defaultBaseURL+"v2/"+cardsBase+id, nil)
-	req.Header.Set("Authorization", "Bearer "+c.conf.APIKey)
+	req.Header.Set("Authorization", "Bearer "+c.Conf.APIKey)
 	req.Header.Set("User-Agent", userAgent)
 
-	resp, err := c.http.Do(req)
+	resp, err := c.Http.Do(req)
 	if err != nil {
 		return nil, err
 	}
@@ -83,6 +83,28 @@ func (c *Culqi) GetCard(id string) (*Charge, error) {
 	return &t, nil
 }
 
+func (c *Culqi) DeleteCard(id string) error {
+	if id == "" {
+		return fmt.Errorf("no se envió id")
+	}
+
+	req, err := http.NewRequest("DELETE", defaultBaseURL+"v2/"+cardsBase+id, nil)
+	req.Header.Set("Authorization", "Bearer "+c.Conf.APIKey)
+	req.Header.Set("User-Agent", userAgent)
+
+	resp, err := c.Http.Do(req)
+	if err != nil {
+		return err
+	}
+
+	if resp.StatusCode >= 400 {
+		return extractError(resp)
+	}
+
+	return nil
+
+}
+
 func (c *Culqi) CreateCard(params *CardsParams) (*Card, error) {
 
 	if params == nil {
@@ -96,15 +118,15 @@ func (c *Culqi) CreateCard(params *CardsParams) (*Card, error) {
 
 	req, err := http.NewRequest("POST", defaultBaseURL+"v2/"+cardsBase, bytes.NewBuffer(reqJSON))
 	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("Authorization", "Bearer "+c.conf.APIKey)
+	req.Header.Set("Authorization", "Bearer "+c.Conf.APIKey)
 	req.Header.Set("User-Agent", userAgent)
 
-	resp, err := c.http.Do(req)
-	if resp.StatusCode >= 400 {
-		return nil, extractError(resp)
-	}
+	resp, err := c.Http.Do(req)
 	if err != nil {
 		return nil, err
+	}
+	if resp.StatusCode >= 400 {
+		return nil, extractError(resp)
 	}
 
 	body, err := ioutil.ReadAll(resp.Body)
