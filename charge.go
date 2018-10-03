@@ -47,7 +47,7 @@ type ChargeResponse struct {
 	Email              string            `json:"email"`
 	Description        string            `json:"description"`
 	Source             Source            `json:"source"`
-	FraudScore         int               `json:"fraud_score"`
+	FraudScore         float64               `json:"fraud_score"`
 	AntifraudDetails   AntifraudDetails  `json:"antifraud_details"`
 	Date               int               `json:"date"`
 	ReferenceCode      string            `json:"reference_code"`
