@@ -21,12 +21,14 @@ const (
 	apiVersion         = "v2"
 )
 
+//Culqi is the complete server struct
 type Culqi struct {
 	Conf *Config
-	Http *http.Client
+	HTTP *http.Client
 }
 
-type CulqiError struct {
+//Error wraps errors returned by culqi's servers.
+type Error struct {
 	Object          string `json:"object"`
 	Type            string `json:"type"`
 	ChargeID        string `json:"charge_id"`
@@ -38,46 +40,49 @@ type CulqiError struct {
 	HTTPError       int
 }
 
-func (e *CulqiError) Error() string {
+func (e *Error) Error() string {
 	return fmt.Sprintf("%v - %v", e.Code, e.MerchantMessage)
 }
 
+//Config takes the api keys from culqi's developer panel to authenticate with their servers.
 type Config struct {
 	MerchantCode string
 	APIKey       string
 	APIVersion   string
 }
 
+//New creates a new culqi server instance
 func New(config *Config, http *http.Client) *Culqi {
-	// set valores por defecto
 	return &Culqi{
 		Conf: config,
-		Http: http,
+		HTTP: http,
 	}
 }
 
+//DefaultWithCredentials with credentials creates a default configuration with an api key.
 func DefaultWithCredentials(apiKey string) *Culqi {
 	conf := &Config{
 		APIKey: apiKey,
 	}
 	return &Culqi{
 		Conf: conf,
-		Http: http.DefaultClient,
+		HTTP: http.DefaultClient,
 	}
 }
 
+//WithCustomClient lets you change the client in case it's deployed with a different one, such as app engine's http client.
 func (c *Culqi) WithCustomClient(http *http.Client) {
-	c.Http = http
+	c.HTTP = http
 }
 
-func extractError(resp *http.Response) *CulqiError {
+func extractError(resp *http.Response) *Error {
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		return nil
 	}
 	defer resp.Body.Close()
 
-	t := CulqiError{}
+	t := Error{}
 
 	if err := json.Unmarshal(body, &t); err != nil {
 		return nil

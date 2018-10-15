@@ -10,6 +10,7 @@ const (
 	plansBase = "plans"
 )
 
+//Plan holds a plan used to later subscribe a card to.
 type Plan struct {
 	Object        string            `json:"object"`
 	ID            string            `json:"id"`
@@ -25,18 +26,20 @@ type Plan struct {
 	Metadata      map[string]string `json:"metadata"`
 }
 
+//PlansPaging returns the paging structure for all plans.
 type PlansPaging struct {
 	Data   []Plan `json:"data"`
 	Paging Paging `json:"paging"`
 }
 
+//GetPlan returns a single plan from its ID.
 func (c *Culqi) GetPlan(id string) (*Plan, error) {
 
 	req, err := http.NewRequest("GET", defaultBaseURL+"v2/"+plansBase+"/"+id, nil)
 	req.Header.Set("Authorization", "Bearer "+c.Conf.APIKey)
 	req.Header.Set("User-Agent", userAgent)
 
-	resp, err := c.Http.Do(req)
+	resp, err := c.HTTP.Do(req)
 	if err != nil {
 		return nil, err
 	}
@@ -56,12 +59,13 @@ func (c *Culqi) GetPlan(id string) (*Plan, error) {
 	return &t, nil
 }
 
+//AllPlans returns a paged results of all plans.
 func (c *Culqi) AllPlans() (*PlansPaging, error) {
 	req, err := http.NewRequest("GET", defaultBaseURL+"v2/"+plansBase, nil)
 	req.Header.Set("Authorization", "Bearer "+c.Conf.APIKey)
 	req.Header.Set("User-Agent", userAgent)
 
-	resp, err := c.Http.Do(req)
+	resp, err := c.HTTP.Do(req)
 	if err != nil {
 		return nil, err
 	}
@@ -80,5 +84,3 @@ func (c *Culqi) AllPlans() (*PlansPaging, error) {
 
 	return &t, nil
 }
-
-//TODO: Create plans

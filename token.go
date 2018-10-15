@@ -6,6 +6,7 @@ import (
 	"net/http"
 )
 
+//Token is used to tokenize a card. It can only be done through culqi's servers due to card storage laws.
 type Token struct {
 	Object       string            `json:"object"`
 	ID           string            `json:"id"`
@@ -20,13 +21,14 @@ type Token struct {
 	Metadata     map[string]string `json:"metadata"`
 }
 
+//GetToken retrieves card tokens from the culqi server.
 func (c *Culqi) GetToken(id string) (*Charge, error) {
 
 	req, err := http.NewRequest("GET", defaultBaseURL+"v2/"+chargesBase+id, nil)
 	req.Header.Set("Authorization", "Bearer "+c.Conf.APIKey)
 	req.Header.Set("User-Agent", userAgent)
 
-	resp, err := c.Http.Do(req)
+	resp, err := c.HTTP.Do(req)
 	if err != nil {
 		return nil, err
 	}

@@ -12,6 +12,7 @@ const (
 	chargesBase = "charges"
 )
 
+//Charge holds the charge data from culqi's servers.
 type Charge struct {
 	Object             string `json:"object"`
 	ID                 string `json:"id"`
@@ -26,6 +27,7 @@ type Charge struct {
 	Source             Source `json:"source"`
 }
 
+//ChargeParams is the post data to create a charge. Requires a CardID named SourceID.
 type ChargeParams struct {
 	Amount           string           `json:"amount"`
 	CurrencyCode     string           `json:"currency_code"`
@@ -34,6 +36,7 @@ type ChargeParams struct {
 	SourceID         string           `json:"source_id"`
 }
 
+//ChargeResponse holds the response once a charge has been created
 type ChargeResponse struct {
 	Duplicated         bool              `json:"duplicated"`
 	Object             string            `json:"object"`
@@ -47,7 +50,7 @@ type ChargeResponse struct {
 	Email              string            `json:"email"`
 	Description        string            `json:"description"`
 	Source             Source            `json:"source"`
-	FraudScore         float64               `json:"fraud_score"`
+	FraudScore         float64           `json:"fraud_score"`
 	AntifraudDetails   AntifraudDetails  `json:"antifraud_details"`
 	Date               int               `json:"date"`
 	ReferenceCode      string            `json:"reference_code"`
@@ -65,6 +68,7 @@ type ChargeResponse struct {
 	Metadata           map[string]string `json:"metadata"`
 }
 
+//FeeDetails contains details about the amount paid on a charge
 type FeeDetails struct {
 	Type         string  `json:"type"`
 	Amount       float64 `json:"amount"`
@@ -73,6 +77,7 @@ type FeeDetails struct {
 	Object       string  `json:"object"`
 }
 
+//Client contains details about the device that initiated a charge request
 type Client struct {
 	IP                string `json:"ip"`
 	IPCountry         string `json:"ip_country"`
@@ -82,6 +87,8 @@ type Client struct {
 	DeviceType        string `json:"device_type"`
 }
 
+//AntifraudDetails contains information used to check if the card holder
+//is commiting fraud.
 type AntifraudDetails struct {
 	Address     string `json:"address"`
 	AddressCity string `json:"address_city"`
@@ -94,13 +101,14 @@ type AntifraudDetails struct {
 	Object      string `json:"object"`
 }
 
+//GetCharge gets a card charge by its id
 func (c *Culqi) GetCharge(id string) (*Charge, error) {
 
 	req, err := http.NewRequest("GET", defaultBaseURL+"v2/"+chargesBase+id, nil)
 	req.Header.Set("Authorization", "Bearer "+c.Conf.APIKey)
 	req.Header.Set("User-Agent", userAgent)
 
-	resp, err := c.Http.Do(req)
+	resp, err := c.HTTP.Do(req)
 	if resp.StatusCode >= 400 {
 		return nil, extractError(resp)
 	}
@@ -120,6 +128,7 @@ func (c *Culqi) GetCharge(id string) (*Charge, error) {
 	return &t, nil
 }
 
+//CreateCharge creates a charge by associating a card token to an amount to pay
 func (c *Culqi) CreateCharge(params *ChargeParams) (*ChargeResponse, error) {
 
 	if params == nil {
@@ -136,7 +145,7 @@ func (c *Culqi) CreateCharge(params *ChargeParams) (*ChargeResponse, error) {
 	req.Header.Set("Authorization", "Bearer "+c.Conf.APIKey)
 	req.Header.Set("User-Agent", userAgent)
 
-	resp, err := c.Http.Do(req)
+	resp, err := c.HTTP.Do(req)
 	if err != nil {
 		return nil, err
 	}

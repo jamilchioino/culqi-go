@@ -12,6 +12,8 @@ const (
 	cardsBase = "cards"
 )
 
+//Card holds credit or debit card card data. Due to credit card storage laws,
+//it cannot hold the entire credit card but a summary of its information to identify it.
 type Card struct {
 	Object     string            `json:"object"`
 	ID         string            `json:"id"`
@@ -21,6 +23,7 @@ type Card struct {
 	Metadata   map[string]string `json:"metadata"`
 }
 
+//Source holds the summary of credit card info.
 type Source struct {
 	Object       string            `json:"object"`
 	ID           string            `json:"id"`
@@ -35,6 +38,8 @@ type Source struct {
 	Metadata     map[string]string `json:"metadata"`
 	Duplicated   bool              `json:"duplicated"`
 }
+
+//Issuer holds the issuer data.
 type Issuer struct {
 	Name        string `json:"name"`
 	Country     string `json:"country"`
@@ -43,6 +48,7 @@ type Issuer struct {
 	PhoneNumber string `json:"phone_number"`
 }
 
+//IIN is the issuer identification number.s
 type IIN struct {
 	Object              string `json:"object"`
 	Bin                 string `json:"bin"`
@@ -52,18 +58,20 @@ type IIN struct {
 	InstallmentsAllowed []int  `json:"installments_allowed"`
 }
 
+//CardsParams defines the post data to create a card
 type CardsParams struct {
 	CustomerID string `json:"customer_id"`
 	TokenID    string `json:"token_id"`
 }
 
+//GetCard gets the card from culqi's servers
 func (c *Culqi) GetCard(id string) (*Charge, error) {
 
 	req, err := http.NewRequest("GET", defaultBaseURL+"v2/"+cardsBase+id, nil)
 	req.Header.Set("Authorization", "Bearer "+c.Conf.APIKey)
 	req.Header.Set("User-Agent", userAgent)
 
-	resp, err := c.Http.Do(req)
+	resp, err := c.HTTP.Do(req)
 	if err != nil {
 		return nil, err
 	}
@@ -83,6 +91,7 @@ func (c *Culqi) GetCard(id string) (*Charge, error) {
 	return &t, nil
 }
 
+//DeleteCard deletes a card with a given id
 func (c *Culqi) DeleteCard(id string) error {
 	if id == "" {
 		return fmt.Errorf("no se envió id")
@@ -92,7 +101,7 @@ func (c *Culqi) DeleteCard(id string) error {
 	req.Header.Set("Authorization", "Bearer "+c.Conf.APIKey)
 	req.Header.Set("User-Agent", userAgent)
 
-	resp, err := c.Http.Do(req)
+	resp, err := c.HTTP.Do(req)
 	if err != nil {
 		return err
 	}
@@ -105,6 +114,7 @@ func (c *Culqi) DeleteCard(id string) error {
 
 }
 
+//CreateCard creates a card by associating a CustomerID and a TokenID
 func (c *Culqi) CreateCard(params *CardsParams) (*Card, error) {
 
 	if params == nil {
@@ -121,7 +131,7 @@ func (c *Culqi) CreateCard(params *CardsParams) (*Card, error) {
 	req.Header.Set("Authorization", "Bearer "+c.Conf.APIKey)
 	req.Header.Set("User-Agent", userAgent)
 
-	resp, err := c.Http.Do(req)
+	resp, err := c.HTTP.Do(req)
 	if err != nil {
 		return nil, err
 	}

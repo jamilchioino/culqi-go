@@ -12,6 +12,7 @@ const (
 	subscriptionsBase = "subscriptions"
 )
 
+//Subscription returns subscription data from culqi's servers.
 type Subscription struct {
 	Object             string                 `json:"object"`
 	ID                 string                 `json:"id"`
@@ -33,18 +34,20 @@ type Subscription struct {
 	Metadata           map[string]interface{} `json:"metadata"`
 }
 
+//SubscriptionParams receives the data required to create a subscription.
 type SubscriptionParams struct {
 	CardID string `json:"card_id"`
 	PlanID string `json:"plan_id"`
 }
 
+//GetSubscription gets a subscription from culqi's servers.
 func (c *Culqi) GetSubscription(id string) (*Subscription, error) {
 
 	req, err := http.NewRequest("GET", defaultBaseURL+"v2/"+subscriptionsBase+"/"+id, nil)
 	req.Header.Set("Authorization", "Bearer "+c.Conf.APIKey)
 	req.Header.Set("User-Agent", userAgent)
 
-	resp, err := c.Http.Do(req)
+	resp, err := c.HTTP.Do(req)
 	if resp.StatusCode >= 400 {
 		return nil, extractError(resp)
 	}
@@ -67,6 +70,7 @@ func (c *Culqi) GetSubscription(id string) (*Subscription, error) {
 	return &t, nil
 }
 
+//CreateSubscription creates a subscription in culqi's servers.
 func (c *Culqi) CreateSubscription(params *SubscriptionParams) (*Subscription, error) {
 
 	if params == nil {
@@ -83,7 +87,7 @@ func (c *Culqi) CreateSubscription(params *SubscriptionParams) (*Subscription, e
 	req.Header.Set("Authorization", "Bearer "+c.Conf.APIKey)
 	req.Header.Set("User-Agent", userAgent)
 
-	resp, err := c.Http.Do(req)
+	resp, err := c.HTTP.Do(req)
 	if err != nil {
 		return nil, err
 	}
@@ -103,12 +107,13 @@ func (c *Culqi) CreateSubscription(params *SubscriptionParams) (*Subscription, e
 	return &t, nil
 }
 
+//DeleteSubscription deletes a subscription in culqi's servers
 func (c *Culqi) DeleteSubscription(id string) error {
 	req, err := http.NewRequest("DELETE", defaultBaseURL+"v2/"+subscriptionsBase+"/"+id, nil)
 	req.Header.Set("Authorization", "Bearer "+c.Conf.APIKey)
 	req.Header.Set("User-Agent", userAgent)
 
-	resp, err := c.Http.Do(req)
+	resp, err := c.HTTP.Do(req)
 	if resp.StatusCode >= 400 {
 		return extractError(resp)
 	}
